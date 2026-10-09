@@ -1,0 +1,14 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the Let's Encrypt role.
+# Controls certificate-related paths and settings that can be overridden when required.
+
+letsencrypt_install_snap_core: true
+
+letsencrypt_certbot_path: /usr/bin/certbot
+
+letsencrypt_directory: /etc/letsencrypt
+
+letsencrypt_snap_bin: /snap/bin/certbot
+
+letsencrypt_snap_certbot_path: /snap/bin/certbot

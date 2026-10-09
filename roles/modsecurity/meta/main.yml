@@ -1,0 +1,25 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines metadata and compatibility information for the ModSecurity role.
+# Documents the supported platforms and role-level metadata used by Ansible.
+
+galaxy_info:
+  role_name: modsecurity
+  author: Francis Crick Institute
+  description: ModSecurity and OWASP CRS for Apache on Rocky Linux 10+
+  license: "All Rights Reserved"
+  min_ansible_version: "2.16"
+
+  platforms:
+    - name: EL
+      versions:
+        - "10"
+
+  galaxy_tags:
+    - apache
+    - modsecurity
+    - security
+    - waf
+    - owasp
+
+dependencies: []

@@ -1,0 +1,6 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the Composer role.
+# Controls where Composer is installed and provides values that can be overridden if required.
+
+composer_install_path: /usr/local/bin/composer

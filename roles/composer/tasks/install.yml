@@ -1,0 +1,64 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs Composer securely and verifies the installation.
+# Validates the installer checksum and avoids reinstalling Composer when already present.
+
+- name: Check whether Composer is installed
+  ansible.builtin.stat:
+    path: "{{ composer_install_path }}"
+  register: composer_binary
+
+- name: Install Composer
+  when: not composer_binary.stat.exists
+  block:
+    - name: Download Composer installer
+      ansible.builtin.get_url:
+        url: https://getcomposer.org/installer
+        dest: /tmp/composer-setup.php
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Download Composer installer signature
+      ansible.builtin.uri:
+        url: https://composer.github.io/installer.sig
+        return_content: true
+      register: composer_installer_signature
+      changed_when: false
+
+    - name: Calculate Composer installer checksum
+      ansible.builtin.stat:
+        path: /tmp/composer-setup.php
+        checksum_algorithm: sha384
+      register: composer_installer
+
+    - name: Verify Composer installer checksum
+      ansible.builtin.assert:
+        that:
+          - composer_installer.stat.checksum == composer_installer_signature.content | trim
+        fail_msg: >-
+          Composer installer checksum verification failed.
+          The installer will not be executed.
+        success_msg: >-
+          Composer installer checksum verified successfully.
+
+    - name: Install Composer
+      ansible.builtin.command:
+        cmd: >-
+          php /tmp/composer-setup.php
+          --install-dir={{ composer_install_path | dirname }}
+          --filename={{ composer_install_path | basename }}
+      args:
+        creates: "{{ composer_install_path }}"
+
+    - name: Remove Composer installer
+      ansible.builtin.file:
+        path: /tmp/composer-setup.php
+        state: absent
+
+- name: Verify Composer installation
+  ansible.builtin.command:
+    cmd: "{{ composer_install_path }} --version"
+  environment:
+    COMPOSER_ALLOW_SUPERUSER: "1"
+  changed_when: false

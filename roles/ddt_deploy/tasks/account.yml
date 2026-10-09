@@ -1,0 +1,26 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Creates and configures the DDT deployment account and group.
+# Ensures the deployment home and site directories exist with the required ownership and permissions.
+
+- name: Ensure DDT group exists
+  ansible.builtin.group:
+    name: "{{ ddt_deploy_group }}"
+    state: present
+
+- name: Ensure DDT deployment user exists
+  ansible.builtin.user:
+    name: "{{ ddt_deploy_user }}"
+    group: "{{ ddt_deploy_group }}"
+    home: "{{ ddt_deploy_home }}"
+    shell: "{{ ddt_deploy_shell }}"
+    create_home: true
+    state: present
+
+- name: Ensure DDT site directory exists
+  ansible.builtin.file:
+    path: "{{ ddt_deploy_site_root }}"
+    state: directory
+    owner: "{{ ddt_deploy_user }}"
+    group: "{{ ddt_deploy_group }}"
+    mode: "{{ ddt_deploy_site_mode }}"

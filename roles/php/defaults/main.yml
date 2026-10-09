@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the PHP role.
+# Values can be overridden by playbook, inventory or AWX variables where required.
+
+php_timezone: Europe/London
+
+php_memory_limit: 512M
+
+php_fpm_service_name: php-fpm

@@ -1,0 +1,12 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Validates that the target host meets the operating system requirements
+# before the Let's Encrypt role installs or configures certificate tooling.
+
+- name: Validate operating system
+  ansible.builtin.assert:
+    that:
+      - ansible_facts["distribution"] == "Rocky"
+      - ansible_facts["distribution_major_version"] | int >= 10
+    fail_msg: >-
+      This role supports Rocky Linux 10 and newer only.

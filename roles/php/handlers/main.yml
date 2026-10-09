@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines PHP-FPM service handlers triggered by configuration changes.
+# Provides controlled restart or reload operations when PHP settings are updated.
+
+- name: Restart PHP-FPM
+  ansible.builtin.systemd:
+    name: "{{ php_fpm_service_name }}"
+    state: restarted
+  listen: php_fpm_restart

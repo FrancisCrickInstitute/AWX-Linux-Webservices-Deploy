@@ -1,0 +1,16 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the DDT integration tasks applied after the core web stack is installed.
+# Configures Apache, PHP-FPM, filesystem ACLs and restricted sudo permissions for DDT.
+
+- name: Configure Apache for DDT
+  ansible.builtin.import_tasks: apache.yml
+
+- name: Configure PHP-FPM for DDT
+  ansible.builtin.import_tasks: php.yml
+
+- name: Configure filesystem ACLs
+  ansible.builtin.import_tasks: acl.yml
+
+- name: Configure sudo permissions
+  ansible.builtin.import_tasks: sudo.yml

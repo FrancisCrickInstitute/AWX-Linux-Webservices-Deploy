@@ -1,0 +1,46 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Verifies the deployed ModSecurity and OWASP Core Rule Set configuration.
+# Confirms Apache configuration validity, module loading and required CRS files.
+
+- name: Test Apache configuration with ModSecurity
+  ansible.builtin.command:
+    cmd: /usr/sbin/httpd -t
+  changed_when: false
+  when: modsecurity_verify_apache_config | bool
+
+- name: Get loaded Apache modules
+  ansible.builtin.command:
+    cmd: /usr/sbin/httpd -M
+  register: modsecurity_loaded_modules
+  changed_when: false
+  when: modsecurity_verify_module | bool
+
+- name: Verify ModSecurity Apache module is loaded
+  ansible.builtin.assert:
+    that:
+      - "'security2_module' in modsecurity_loaded_modules.stdout"
+    fail_msg: >-
+      Apache configuration passed, but security2_module is not loaded.
+      Check the mod_security package and Apache module configuration.
+    success_msg: >-
+      ModSecurity security2_module is loaded.
+  when: modsecurity_verify_module | bool
+
+- name: Verify OWASP CRS configuration exists
+  ansible.builtin.stat:
+    path: "{{ modsecurity_crs_directory }}/crs-setup.conf"
+  register: modsecurity_crs_config
+  when: modsecurity_crs_enabled | bool
+
+- name: Assert OWASP CRS configuration exists
+  ansible.builtin.assert:
+    that:
+      - modsecurity_crs_config.stat.exists
+      - modsecurity_crs_config.stat.isreg
+    fail_msg: >-
+      OWASP CRS configuration was not found at
+      {{ modsecurity_crs_directory }}/crs-setup.conf.
+    success_msg: >-
+      OWASP CRS configuration exists.
+  when: modsecurity_crs_enabled | bool

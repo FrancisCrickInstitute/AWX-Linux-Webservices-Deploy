@@ -1,0 +1,9 @@
+---
+- name: Deploy Apache and PHP
+  hosts: webservers
+  become: true
+
+  roles:
+    - apache
+    - php
+    - firewalld

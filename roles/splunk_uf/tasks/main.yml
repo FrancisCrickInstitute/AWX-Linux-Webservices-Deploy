@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the Splunk UF role.
+# Coordinates operating system validation and permissions required for Splunk log collection.
+
+- name: Validate platform
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Configure Splunk permissions
+  ansible.builtin.import_tasks: permissions.yml

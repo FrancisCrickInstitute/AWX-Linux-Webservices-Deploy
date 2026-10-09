@@ -1,0 +1,16 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the PHP role.
+# Coordinates validation, installation, configuration and PHP-FPM service management.
+
+- name: Validate platform
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install PHP
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure PHP
+  ansible.builtin.import_tasks: config.yml
+
+- name: Configure PHP service
+  ansible.builtin.import_tasks: service.yml

@@ -1,0 +1,67 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures Apache site directories, virtual hosts and IP redirects.
+# Manages the site configuration required for standard Crick-hosted web services.
+
+- name: Create Apache site configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /etc/httpd/sites-available
+    - /etc/httpd/sites-enabled
+
+- name: Enable sites-enabled include
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    backup: true
+    line: 'IncludeOptional sites-enabled/*.conf'
+    state: present
+    insertafter: 'IncludeOptional conf\.d/\*\.conf'
+  notify:
+    - apache_reload
+
+- name: Deploy default site virtual host
+  ansible.builtin.template:
+    src: site.conf.j2
+    dest: "/etc/httpd/sites-available/{{ apache_server_name }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  when: apache_manage_default_vhost
+  notify:
+    - apache_reload
+
+- name: Enable default site virtual host
+  ansible.builtin.file:
+    src: "/etc/httpd/sites-available/{{ apache_server_name }}.conf"
+    dest: "/etc/httpd/sites-enabled/{{ apache_server_name }}.conf"
+    state: link
+    force: true
+  when: apache_manage_default_vhost
+  notify:
+    - apache_reload
+
+- name: Deploy IP redirect virtual host
+  ansible.builtin.template:
+    src: ip.conf.j2
+    dest: "/etc/httpd/sites-available/{{ ansible_facts['default_ipv4']['address'] }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  when: apache_manage_ip_redirect_vhost
+  notify:
+    - apache_reload
+
+- name: Enable IP redirect virtual host
+  ansible.builtin.file:
+    src: "/etc/httpd/sites-available/{{ ansible_facts['default_ipv4']['address'] }}.conf"
+    dest: "/etc/httpd/sites-enabled/{{ ansible_facts['default_ipv4']['address'] }}.conf"
+    state: link
+    force: true
+  when: apache_manage_ip_redirect_vhost
+  notify:
+    - apache_reload

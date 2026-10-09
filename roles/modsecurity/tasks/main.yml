@@ -1,0 +1,35 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the ModSecurity role.
+# Coordinates validation, installation, OWASP CRS deployment, configuration and verification.
+
+- name: Validate ModSecurity role requirements
+  ansible.builtin.import_tasks: validate.yml
+  tags:
+    - always
+    - modsecurity_validate
+
+- name: Install ModSecurity
+  ansible.builtin.import_tasks: install.yml
+  tags:
+    - modsecurity
+    - modsecurity_install
+
+- name: Install OWASP Core Rule Set
+  ansible.builtin.import_tasks: crs.yml
+  when: modsecurity_crs_enabled | bool
+  tags:
+    - modsecurity
+    - modsecurity_crs
+
+- name: Configure ModSecurity
+  ansible.builtin.import_tasks: config.yml
+  tags:
+    - modsecurity
+    - modsecurity_config
+
+- name: Verify ModSecurity
+  ansible.builtin.import_tasks: verify.yml
+  tags:
+    - modsecurity
+    - modsecurity_verify

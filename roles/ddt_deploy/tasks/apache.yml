@@ -1,0 +1,22 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures Apache to run using the DDT deployment account and group.
+# Integrates the standard Apache configuration with the DDT deployment model.
+
+- name: Configure Apache runtime user
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^User\s+'
+    line: "User {{ ddt_deploy_user }}"
+    backup: true
+  notify:
+    - apache_restart
+
+- name: Configure Apache runtime group
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^Group\s+'
+    line: "Group {{ ddt_deploy_group }}"
+    backup: true
+  notify:
+    - apache_restart

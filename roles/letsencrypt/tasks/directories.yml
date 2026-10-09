@@ -1,0 +1,12 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Creates the directories required by the Let's Encrypt certificate workflow.
+# Ensures certificate-related paths exist with the required ownership and permissions.
+
+- name: Create Let's Encrypt directory
+  ansible.builtin.file:
+    path: "{{ letsencrypt_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"

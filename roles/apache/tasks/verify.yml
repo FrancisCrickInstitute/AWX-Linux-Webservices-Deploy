@@ -1,0 +1,9 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Validates the Apache configuration after deployment.
+# Ensures the generated configuration is syntactically valid before completion.
+
+- name: Verify Apache configuration
+  ansible.builtin.command:
+    cmd: "{{ apache_validate_command }}"
+  changed_when: false

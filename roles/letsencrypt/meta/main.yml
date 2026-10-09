@@ -1,0 +1,13 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines metadata and compatibility information for the Let's Encrypt role.
+# Documents the supported platforms and role-level metadata used by Ansible.
+
+galaxy_info:
+  role_name: letsencrypt
+  author: Francis Crick Institute
+  description: Certbot and Let's Encrypt for Rocky Linux 10+
+  license: "All Rights Reserved"
+  min_ansible_version: "2.16"
+
+dependencies: []

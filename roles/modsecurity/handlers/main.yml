@@ -1,0 +1,16 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines Apache service handlers triggered by ModSecurity configuration changes.
+# Ensures Apache is restarted or reloaded when security configuration requires it.
+
+- name: Validate ModSecurity Apache configuration
+  ansible.builtin.command:
+    cmd: /usr/sbin/httpd -t
+  changed_when: false
+  listen: Validate ModSecurity Apache configuration
+
+- name: Restart Apache for ModSecurity
+  ansible.builtin.systemd:
+    name: "{{ modsecurity_apache_service_name }}"
+    state: restarted
+  listen: Restart Apache for ModSecurity

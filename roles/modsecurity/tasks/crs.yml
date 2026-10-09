@@ -1,0 +1,96 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Downloads, installs and configures the OWASP Core Rule Set for ModSecurity.
+# Ensures the CRS is deployed idempotently and integrated with the managed ModSecurity configuration.
+
+- name: Create ModSecurity download directory
+  ansible.builtin.file:
+    path: "{{ modsecurity_download_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Create ModSecurity configuration directory
+  ansible.builtin.file:
+    path: "{{ modsecurity_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download OWASP Core Rule Set
+  ansible.builtin.get_url:
+    url: "{{ modsecurity_crs_url }}"
+    dest: "{{ modsecurity_crs_archive }}"
+    owner: root
+    group: root
+    mode: "0644"
+    checksum: >-
+      {{
+        modsecurity_crs_checksum
+        if modsecurity_crs_checksum | length > 0
+        else omit
+      }}
+
+- name: Check whether OWASP CRS is already installed
+  ansible.builtin.stat:
+    path: "{{ modsecurity_crs_directory }}/crs-setup.conf"
+  register: modsecurity_crs_installed
+
+- name: Create OWASP CRS directory
+  ansible.builtin.file:
+    path: "{{ modsecurity_crs_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when: not modsecurity_crs_installed.stat.exists
+
+- name: Extract OWASP Core Rule Set
+  ansible.builtin.unarchive:
+    src: "{{ modsecurity_crs_archive }}"
+    dest: "{{ modsecurity_crs_directory }}"
+    remote_src: true
+    owner: root
+    group: root
+    extra_opts:
+      - --strip-components=1
+  when: not modsecurity_crs_installed.stat.exists
+
+- name: Check for standard CRS rules directory
+  ansible.builtin.stat:
+    path: "{{ modsecurity_crs_directory }}/rules"
+  register: modsecurity_crs_rules
+
+- name: Check for activated_rules directory
+  ansible.builtin.stat:
+    path: "{{ modsecurity_crs_directory }}/activated_rules"
+  register: modsecurity_activated_rules
+
+- name: Rename CRS rules directory to activated_rules
+  ansible.builtin.command:
+    cmd: >-
+      mv
+      {{ modsecurity_crs_directory }}/rules
+      {{ modsecurity_crs_directory }}/activated_rules
+    creates: "{{ modsecurity_crs_directory }}/activated_rules"
+  when:
+    - modsecurity_crs_rules.stat.exists
+    - not modsecurity_activated_rules.stat.exists
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity
+
+- name: Create OWASP CRS configuration
+  ansible.builtin.copy:
+    src: "{{ modsecurity_crs_directory }}/crs-setup.conf.example"
+    dest: "{{ modsecurity_crs_directory }}/crs-setup.conf"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+    force: false
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity

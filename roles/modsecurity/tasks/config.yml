@@ -1,0 +1,56 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Applies the managed ModSecurity configuration to the Apache webserver.
+# Configures the rule engine, audit logging and integration with the OWASP Core Rule Set.
+
+- name: Configure ModSecurity rule engine
+  ansible.builtin.lineinfile:
+    path: "{{ modsecurity_config_file }}"
+    regexp: '^SecRuleEngine'
+    line: 'SecRuleEngine {{ modsecurity_rule_engine }}'
+    backup: true
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity
+
+- name: Configure ModSecurity audit engine
+  ansible.builtin.lineinfile:
+    path: "{{ modsecurity_config_file }}"
+    regexp: '^SecAuditEngine'
+    line: 'SecAuditEngine {{ modsecurity_audit_engine }}'
+    backup: true
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity
+
+- name: Configure ModSecurity audit log
+  ansible.builtin.lineinfile:
+    path: "{{ modsecurity_config_file }}"
+    regexp: '^SecAuditLog '
+    line: 'SecAuditLog {{ modsecurity_audit_log }}'
+    backup: true
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity
+
+- name: Configure ModSecurity audit log parts
+  ansible.builtin.lineinfile:
+    path: "{{ modsecurity_config_file }}"
+    regexp: '^SecAuditLogParts'
+    line: 'SecAuditLogParts {{ modsecurity_audit_log_parts }}'
+    backup: true
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity
+
+- name: Include OWASP CRS configuration
+  ansible.builtin.blockinfile:
+    path: "{{ modsecurity_config_file }}"
+    marker: "# {mark} ANSIBLE MANAGED MODSECURITY CRS"
+    backup: true
+    block: |
+      Include modsecurity.d/coreruleset-{{ modsecurity_crs_version }}/crs-setup.conf
+      Include modsecurity.d/coreruleset-{{ modsecurity_crs_version }}/activated_rules/*.conf
+  notify:
+    - Validate ModSecurity Apache configuration
+    - Restart Apache for ModSecurity

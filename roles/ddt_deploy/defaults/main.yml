@@ -1,0 +1,18 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the DDT deployment role.
+# Controls the DDT account, group, paths and permissions used for web application deployment.
+
+ddt_deploy_user: ddt-deploy
+ddt_deploy_group: ddt
+
+ddt_deploy_home: "/home/{{ ddt_deploy_user }}"
+ddt_deploy_site_root: "{{ ddt_deploy_home }}/site"
+ddt_deploy_document_root: "{{ ddt_deploy_site_root }}"
+
+ddt_deploy_shell: /bin/bash
+ddt_deploy_site_mode: "0755"
+
+ddt_deploy_apache_log_dir: /var/log/httpd
+ddt_deploy_php_log_dir: /var/log/php-fpm
+ddt_deploy_php_session_dir: /var/lib/php/session

@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Manages the Apache service state after installation and configuration.
+# Ensures Apache is enabled at boot and running on the target webserver.
+
+- name: Ensure Apache service is enabled and started
+  ansible.builtin.systemd:
+    name: "{{ apache_service_name }}"
+    enabled: true
+    state: started

@@ -1,0 +1,50 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs the certificate tooling required by the Let's Encrypt role.
+# Provides Certbot and related components used to manage Let's Encrypt certificates.
+
+- name: Install snapd
+  ansible.builtin.dnf:
+    name: snapd
+    state: present
+
+- name: Create snap symbolic link
+  ansible.builtin.file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    state: link
+    force: true
+
+- name: Enable snapd socket
+  ansible.builtin.systemd:
+    name: snapd.socket
+    enabled: true
+    state: started
+
+- name: Start snapd service
+  ansible.builtin.systemd:
+    name: snapd.service
+    state: started
+
+- name: Install snap core
+  community.general.snap:
+    name: core
+    state: present
+  when: letsencrypt_install_snap_core
+
+- name: Install certbot
+  community.general.snap:
+    name: certbot
+    classic: true
+    state: present
+
+- name: Create certbot symlink
+  ansible.builtin.file:
+    src: "{{ letsencrypt_snap_certbot_path }}"
+    dest: "{{ letsencrypt_certbot_path }}"
+    state: link
+
+- name: Verify certbot installation
+  ansible.builtin.command:
+    cmd: "{{ letsencrypt_certbot_path }} --version"
+  changed_when: false

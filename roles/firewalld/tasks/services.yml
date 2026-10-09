@@ -1,0 +1,18 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures the firewall services required by provisioned webservers.
+# Manages access for services such as HTTP and HTTPS through Firewalld.
+
+- name: Ensure firewalld service is enabled and running
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: true
+    state: started
+
+- name: Open firewall services
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ firewalld_services }}"

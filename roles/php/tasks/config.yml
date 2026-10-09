@@ -1,0 +1,24 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Applies the managed PHP configuration required by hosted web applications.
+# Configures PHP runtime settings such as timezone and memory limits.
+
+- name: Configure PHP timezone
+  ansible.builtin.lineinfile:
+    path: /etc/php.ini
+    backup: true
+    regexp: '^date\.timezone\s*='
+    line: 'date.timezone = {{ php_timezone }}'
+    state: present
+  notify:
+    - php_fpm_restart
+
+- name: Configure PHP memory limit
+  ansible.builtin.lineinfile:
+    path: /etc/php.ini
+    backup: true
+    regexp: '^memory_limit\s*='
+    line: 'memory_limit = {{ php_memory_limit }}'
+    state: present
+  notify:
+    - php_fpm_restart

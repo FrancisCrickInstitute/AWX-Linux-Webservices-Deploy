@@ -1,0 +1,23 @@
+{#
+Created by Adam Spandel, October 2026
+Purpose: Generates the site-specific ModSecurity configuration for Apache.
+Controls the ModSecurity rule engine, audit logging and OWASP CRS integration.
+#}
+
+# {{ ansible_managed }}
+
+<IfModule security2_module>
+    SecRuleEngine {{ modsecurity_rule_engine }}
+
+    SecRequestBodyAccess {{ 'On' if modsecurity_request_body_access else 'Off' }}
+    SecResponseBodyAccess {{ 'On' if modsecurity_response_body_access else 'Off' }}
+
+    SecAuditEngine {{ modsecurity_audit_engine }}
+    SecAuditLog {{ modsecurity_audit_log }}
+    SecAuditLogParts {{ modsecurity_audit_log_parts }}
+
+{% if modsecurity_crs_enabled %}
+    IncludeOptional {{ modsecurity_crs_current_link }}/crs-setup.conf
+    IncludeOptional {{ modsecurity_crs_current_link }}/rules/*.conf
+{% endif %}
+</IfModule>

@@ -1,0 +1,13 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the Let's Encrypt role.
+# Coordinates operating system validation, directory preparation and Certbot installation.
+
+- name: Validate platform
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install Let's Encrypt prerequisites
+  ansible.builtin.import_tasks: install.yml
+
+- name: Create Let's Encrypt directories
+  ansible.builtin.import_tasks: directories.yml

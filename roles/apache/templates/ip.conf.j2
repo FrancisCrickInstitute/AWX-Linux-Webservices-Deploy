@@ -1,0 +1,27 @@
+{#
+Created by Adam Spandel, October 2026
+Purpose: Generates Apache virtual hosts that redirect requests made to the server's
+IP address to the configured FQDN over HTTPS.
+#}
+
+# {{ ansible_managed }}
+
+<VirtualHost *:{{ apache_listen_http_port }}>
+
+    ServerName {{ ansible_facts["default_ipv4"]["address"] }}
+
+    Redirect permanent / https://{{ apache_ip_redirect_target }}/
+
+</VirtualHost>
+
+{% if apache_enable_ssl %}
+
+<VirtualHost *:{{ apache_listen_https_port }}>
+
+    ServerName {{ ansible_facts["default_ipv4"]["address"] }}
+
+    Redirect permanent / https://{{ apache_ip_redirect_target }}/
+
+</VirtualHost>
+
+{% endif %}

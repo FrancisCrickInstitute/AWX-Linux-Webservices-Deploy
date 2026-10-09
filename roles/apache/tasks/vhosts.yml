@@ -1,0 +1,71 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Manages Apache FQDN and IP-based virtual-host configurations.
+# Validates required host information and enables the corresponding site configurations.
+
+- name: Validate required FQDN virtual-host variables
+  ansible.builtin.assert:
+    that:
+      - apache_server_name | length > 0
+      - apache_fqdn_vhost_filename | length > 0
+    fail_msg: >-
+      A valid Apache server name and FQDN virtual-host filename
+      must be provided.
+  when: apache_manage_fqdn_vhost | bool
+
+- name: Deploy FQDN virtual-host configuration
+  ansible.builtin.template:
+    src: "{{ apache_fqdn_vhost_template }}"
+    dest: "{{ apache_sites_available_directory }}/{{ apache_fqdn_vhost_filename }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: apache_manage_fqdn_vhost | bool
+  notify:
+    - apache_validate
+    - apache_reload
+
+- name: Enable FQDN virtual host
+  ansible.builtin.file:
+    src: "{{ apache_sites_available_directory }}/{{ apache_fqdn_vhost_filename }}"
+    dest: "{{ apache_sites_enabled_directory }}/{{ apache_fqdn_vhost_filename }}"
+    state: link
+    force: true
+  when: apache_manage_fqdn_vhost | bool
+  notify:
+    - apache_validate
+    - apache_reload
+
+- name: Validate IPv4 facts for IP virtual host
+  ansible.builtin.assert:
+    that:
+      - ansible_facts["default_ipv4"] is defined
+      - ansible_facts["default_ipv4"]["address"] is defined
+      - ansible_facts["default_ipv4"]["address"] | length > 0
+    fail_msg: >-
+      The IP virtual host is enabled, but Ansible could not
+      determine the default IPv4 address.
+  when: apache_manage_ip_vhost | bool
+
+- name: Deploy IP virtual-host configuration
+  ansible.builtin.template:
+    src: "{{ apache_ip_vhost_template }}"
+    dest: "{{ apache_sites_available_directory }}/{{ apache_ip_vhost_filename }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when: apache_manage_ip_vhost | bool
+  notify:
+    - apache_validate
+    - apache_reload
+
+- name: Enable IP virtual host
+  ansible.builtin.file:
+    src: "{{ apache_sites_available_directory }}/{{ apache_ip_vhost_filename }}"
+    dest: "{{ apache_sites_enabled_directory }}/{{ apache_ip_vhost_filename }}"
+    state: link
+    force: true
+  when: apache_manage_ip_vhost | bool
+  notify:
+    - apache_validate
+    - apache_reload

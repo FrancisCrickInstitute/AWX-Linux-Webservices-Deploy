@@ -1,0 +1,31 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures PHP-FPM to operate with the DDT deployment account and group.
+# Manages PHP-FPM runtime ownership and socket ACL access required for DDT deployments.
+
+- name: Add DDT user to PHP-FPM socket ACLs
+  ansible.builtin.lineinfile:
+    path: /etc/php-fpm.d/www.conf
+    backup: true
+    regexp: '^listen\.acl_users\s*='
+    line: "listen.acl_users = apache,nginx,{{ ddt_deploy_user }}"
+  notify:
+    - php_fpm_restart
+
+- name: Configure PHP-FPM user
+  ansible.builtin.lineinfile:
+    path: /etc/php-fpm.d/www.conf
+    backup: true
+    regexp: '^user\s*='
+    line: "user = {{ ddt_deploy_user }}"
+  notify:
+    - php_fpm_restart
+
+- name: Configure PHP-FPM group
+  ansible.builtin.lineinfile:
+    path: /etc/php-fpm.d/www.conf
+    backup: true
+    regexp: '^group\s*='
+    line: "group = {{ ddt_deploy_group }}"
+  notify:
+    - php_fpm_restart

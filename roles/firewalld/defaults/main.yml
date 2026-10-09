@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the Firewalld role.
+# Controls the firewall services and settings required by provisioned webservers.
+
+firewalld_services:
+  - http
+  - https
+
+firewalld_enabled: true

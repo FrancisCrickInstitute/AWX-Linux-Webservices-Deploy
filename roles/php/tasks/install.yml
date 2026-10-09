@@ -1,0 +1,21 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs the PHP packages required by the webserver role.
+# Provides the PHP and PHP-FPM components required by hosted web applications.
+
+- name: Install PHP packages
+  ansible.builtin.dnf:
+    name:
+      - php
+      - php-cli
+      - php-common
+      - php-fpm
+      - php-gd
+      - php-intl
+      - php-mbstring
+      - php-mysqlnd
+      - php-pdo
+      - php-process
+      - php-soap
+      - php-xml
+    state: present

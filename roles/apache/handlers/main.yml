@@ -1,0 +1,22 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines Apache service handlers triggered by configuration changes.
+# Provides controlled configuration validation, reload and restart operations.
+
+- name: Validate Apache configuration
+  ansible.builtin.command:
+    cmd: /usr/sbin/httpd -t
+  changed_when: false
+  listen: apache_validate
+
+- name: Restart Apache
+  ansible.builtin.systemd:
+    name: "{{ apache_service_name }}"
+    state: restarted
+  listen: apache_restart
+
+- name: Reload Apache
+  ansible.builtin.systemd:
+    name: "{{ apache_service_name }}"
+    state: reloaded
+  listen: apache_reload

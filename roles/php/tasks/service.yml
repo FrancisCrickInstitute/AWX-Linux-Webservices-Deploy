@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Manages the PHP-FPM service state after installation and configuration.
+# Ensures PHP-FPM is enabled at boot and running on the target webserver.
+
+- name: Ensure php-fpm is enabled and running
+  ansible.builtin.systemd:
+    name: "{{ php_fpm_service_name }}"
+    enabled: true
+    state: started

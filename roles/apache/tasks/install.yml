@@ -1,0 +1,12 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs the Apache packages required by the webserver role.
+# Provides the base Apache installation before configuration and hardening are applied.
+
+- name: Install Apache packages
+  ansible.builtin.dnf:
+    name:
+      - httpd
+      - httpd-tools
+      - mod_ssl
+    state: present

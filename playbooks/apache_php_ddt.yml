@@ -1,0 +1,24 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Provision an Apache and PHP webserver with DDT deployment access.
+# Includes the standard web stack and DDT-specific account, permissions and configuration.
+
+- name: Deploy Apache PHP and DDT
+  hosts: webservers
+  become: true
+
+  vars:
+    apache_document_root: "{{ ddt_deploy_document_root }}"
+
+  pre_tasks:
+    - name: Create DDT deployment account
+      ansible.builtin.import_role:
+        name: ddt_deploy
+        tasks_from: account
+
+  roles:
+    - apache
+    - php
+    - firewalld
+    - composer
+    - ddt_deploy

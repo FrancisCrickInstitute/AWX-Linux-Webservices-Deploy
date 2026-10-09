@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the Composer role.
+# Coordinates operating system validation and Composer installation.
+
+- name: Validate platform
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install Composer
+  ansible.builtin.import_tasks: install.yml

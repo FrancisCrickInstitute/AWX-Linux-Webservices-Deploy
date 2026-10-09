@@ -1,0 +1,10 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the Splunk UF role.
+# Controls the Splunk service account and log paths that require access for log collection.
+
+splunk_uf_user: splunk
+
+splunk_uf_apache_log_dir: /var/log/httpd
+
+splunk_uf_php_log_dir: /var/log/php-fpm

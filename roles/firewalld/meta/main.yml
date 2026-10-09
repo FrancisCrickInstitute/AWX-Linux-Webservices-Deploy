@@ -1,0 +1,13 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines metadata and compatibility information for the Firewalld role.
+# Documents the supported platforms and role-level metadata used by Ansible.
+
+galaxy_info:
+  role_name: firewalld
+  author: Francis Crick Institute
+  description: Firewalld configuration role for Rocky Linux 10+
+  license: "All Rights Reserved"
+  min_ansible_version: "2.16"
+
+dependencies: []

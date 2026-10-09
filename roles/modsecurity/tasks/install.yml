@@ -1,0 +1,9 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs the ModSecurity packages required by the Apache webserver.
+# Provides the web application firewall components used by the ModSecurity role.
+
+- name: Install ModSecurity package
+  ansible.builtin.dnf:
+    name: "{{ modsecurity_packages }}"
+    state: present

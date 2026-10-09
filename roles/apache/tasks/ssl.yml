@@ -1,0 +1,30 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures Apache SSL/TLS settings for HTTPS.
+# Manages the SSL configuration and TLS protocol settings used by the Apache role.
+
+- name: Ensure ssl.conf exists
+  ansible.builtin.stat:
+    path: /etc/httpd/conf.d/ssl.conf
+  register: apache_ssl_conf
+
+- name: Set ServerName for default SSL configuration
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf.d/ssl.conf
+    insertafter: '^#ServerName'
+    line: 'ServerName localhost'
+  when: apache_ssl_conf.stat.exists
+  notify:
+    - apache_reload
+
+- name: Configure TLS protocols
+  ansible.builtin.blockinfile:
+    path: /etc/httpd/conf.d/ssl.conf
+    marker: "# {mark} ANSIBLE MANAGED SSL SETTINGS"
+    block: |
+      SSLProtocol -all +TLSv1.3 +TLSv1.2
+      SSLHonorCipherOrder On
+      SSLCompression off
+  when: apache_ssl_conf.stat.exists
+  notify:
+    - apache_reload

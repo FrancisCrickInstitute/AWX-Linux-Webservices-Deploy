@@ -1,0 +1,40 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the ModSecurity role.
+# Controls ModSecurity, audit logging and OWASP Core Rule Set configuration.
+
+modsecurity_packages:
+  - mod_security
+
+modsecurity_crs_enabled: true
+
+modsecurity_crs_version: "3.3.4"
+
+modsecurity_directory: /etc/httpd/modsecurity.d
+
+modsecurity_crs_directory: >-
+  {{ modsecurity_directory }}/coreruleset-{{ modsecurity_crs_version }}
+
+modsecurity_download_directory: /var/tmp/modsecurity
+
+modsecurity_crs_url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ modsecurity_crs_version }}.tar.gz"
+
+modsecurity_crs_archive: "{{ modsecurity_download_directory }}/coreruleset-{{ modsecurity_crs_version }}.tar.gz"
+
+modsecurity_crs_checksum: ""
+
+modsecurity_audit_log: /var/log/httpd/modsec_audit.log
+
+modsecurity_rule_engine: "On"
+
+modsecurity_audit_engine: RelevantOnly
+
+modsecurity_audit_log_parts: ABIJDEFHZ
+
+modsecurity_config_file: /etc/httpd/conf.d/modsecurity.conf
+
+modsecurity_verify_apache_config: true
+
+modsecurity_verify_module: true
+
+modsecurity_apache_service_name: httpd

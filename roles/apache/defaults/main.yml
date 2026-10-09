@@ -1,0 +1,60 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the default configuration values used by the Apache role.
+# Values can be overridden by playbook, inventory or AWX variables where required.
+
+apache_enable_ssl: true
+
+apache_service_name: httpd
+
+apache_listen_http_port: 80
+
+apache_listen_https_port: 443
+
+apache_server_name: "{{ ansible_facts['fqdn'] }}"
+
+apache_document_root: /var/www/html
+
+apache_allow_override: All
+
+apache_directory_require: "all granted"
+
+apache_log_level: warn
+
+apache_log_directory: /var/log/httpd
+
+apache_server_aliases: []
+
+apache_redirect_http_to_https: false
+
+apache_manage_default_vhost: true
+
+apache_manage_ip_redirect_vhost: true
+
+apache_ip_redirect_target: "{{ apache_server_name }}"
+
+apache_trace_enable: "Off"
+
+apache_server_signature: "Off"
+
+apache_server_tokens: Prod
+
+apache_file_etag: None
+
+apache_manage_security_headers: true
+
+apache_security_headers:
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+
+apache_content_security_policy: "frame-ancestors 'self'"
+
+apache_enable_hsts: false
+
+apache_hsts_max_age: 63072000
+
+apache_hsts_include_subdomains: true
+
+apache_hsts_preload: false
+
+apache_validate_command: /usr/sbin/httpd -t

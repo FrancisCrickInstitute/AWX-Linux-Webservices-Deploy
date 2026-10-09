@@ -1,0 +1,64 @@
+{#
+Created by Adam Spandel, October 2026
+Purpose: Generates the primary Apache virtual-host configuration for the webserver.
+Uses role variables to configure the server name, document root and HTTP/HTTPS virtual hosts.
+#}
+
+# {{ ansible_managed }}
+
+<VirtualHost *:{{ apache_listen_http_port }}>
+
+    ServerName {{ apache_server_name }}
+
+{% for alias in apache_server_aliases %}
+    ServerAlias {{ alias }}
+{% endfor %}
+
+{% if apache_redirect_http_to_https %}
+
+    RewriteEngine On
+    RewriteRule ^/(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+{% else %}
+
+    DocumentRoot {{ apache_document_root }}
+
+    <Directory "{{ apache_document_root }}">
+        AllowOverride {{ apache_allow_override }}
+        Require {{ apache_directory_require }}
+    </Directory>
+
+{% endif %}
+
+    LogLevel {{ apache_log_level }}
+
+    ErrorLog {{ apache_log_directory }}/{{ apache_server_name }}_error.log
+    CustomLog {{ apache_log_directory }}/{{ apache_server_name }}_access.log combined
+
+</VirtualHost>
+
+{% if apache_enable_ssl %}
+
+<VirtualHost *:{{ apache_listen_https_port }}>
+
+    ServerName {{ apache_server_name }}
+
+{% for alias in apache_server_aliases %}
+    ServerAlias {{ alias }}
+{% endfor %}
+
+    DocumentRoot {{ apache_document_root }}
+
+    <Directory "{{ apache_document_root }}">
+        AllowOverride {{ apache_allow_override }}
+        Require {{ apache_directory_require }}
+    </Directory>
+
+    LogLevel {{ apache_log_level }}
+
+    ErrorLog {{ apache_log_directory }}/{{ apache_server_name }}_error.log
+    CustomLog {{ apache_log_directory }}/{{ apache_server_name }}_access.log combined
+
+</VirtualHost>
+
+{% endif %}

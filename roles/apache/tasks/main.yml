@@ -1,0 +1,26 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the Apache role.
+# Coordinates validation, installation, configuration, hardening and service verification.
+
+- name: Validate environment
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install Apache
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure Apache
+  ansible.builtin.import_tasks: config.yml
+
+- name: Configure Apache hardening
+  ansible.builtin.import_tasks: hardening.yml
+
+- name: Configure SSL
+  ansible.builtin.import_tasks: ssl.yml
+  when: apache_enable_ssl | default(false) | bool
+
+- name: Start and enable Apache
+  ansible.builtin.import_tasks: service.yml
+
+- name: Verify Apache configuration
+  ansible.builtin.import_tasks: verify.yml

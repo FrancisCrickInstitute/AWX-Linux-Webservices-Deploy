@@ -1,0 +1,14 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines the execution order of tasks within the Firewalld role.
+# Coordinates validation, installation, service management and firewall configuration.
+
+- name: Validate platform
+  ansible.builtin.import_tasks: validate.yml
+
+- name: Install firewalld
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure services
+  ansible.builtin.import_tasks: services.yml
+  when: firewalld_enabled | bool

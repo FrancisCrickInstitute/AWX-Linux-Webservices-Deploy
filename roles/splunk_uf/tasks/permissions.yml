@@ -1,0 +1,45 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures the filesystem permissions required by the Splunk Universal Forwarder.
+# Grants controlled access to webserver log locations required for log collection.
+
+- name: Install ACL utilities
+  ansible.builtin.dnf:
+    name: acl
+    state: present
+
+- name: Grant Splunk access to Apache logs
+  ansible.posix.acl:
+    path: "{{ splunk_uf_apache_log_dir }}"
+    entity: "{{ splunk_uf_user }}"
+    etype: user
+    permissions: rX
+    recursive: true
+    state: present
+
+- name: Grant default Splunk access to Apache logs
+  ansible.posix.acl:
+    path: "{{ splunk_uf_apache_log_dir }}"
+    entity: "{{ splunk_uf_user }}"
+    etype: user
+    permissions: rX
+    default: true
+    state: present
+
+- name: Grant Splunk access to PHP-FPM logs
+  ansible.posix.acl:
+    path: "{{ splunk_uf_php_log_dir }}"
+    entity: "{{ splunk_uf_user }}"
+    etype: user
+    permissions: rX
+    recursive: true
+    state: present
+
+- name: Grant default Splunk access to PHP-FPM logs
+  ansible.posix.acl:
+    path: "{{ splunk_uf_php_log_dir }}"
+    entity: "{{ splunk_uf_user }}"
+    etype: user
+    permissions: rX
+    default: true
+    state: present

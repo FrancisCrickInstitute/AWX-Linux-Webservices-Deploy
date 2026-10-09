@@ -1,0 +1,33 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Validates operating system compatibility and ModSecurity configuration
+# before installation and OWASP Core Rule Set configuration are applied.
+
+- name: Validate operating system
+  ansible.builtin.assert:
+    that:
+      - ansible_facts["distribution"] == "Rocky"
+      - ansible_facts["distribution_major_version"] | int >= 10
+    fail_msg: >-
+      The ModSecurity role supports Rocky Linux 10 and newer only.
+      Detected {{ ansible_facts["distribution"] }}
+      {{ ansible_facts["distribution_version"] }}.
+    success_msg: >-
+      Validated Rocky Linux
+      {{ ansible_facts["distribution_version"] }}.
+
+- name: Validate ModSecurity rule engine mode
+  ansible.builtin.assert:
+    that:
+      - modsecurity_rule_engine in ["On", "DetectionOnly", "Off"]
+    fail_msg: >-
+      modsecurity_rule_engine must be On, DetectionOnly or Off.
+      Current value: {{ modsecurity_rule_engine }}.
+
+- name: Validate OWASP CRS version
+  ansible.builtin.assert:
+    that:
+      - modsecurity_crs_version | length > 0
+    fail_msg: >-
+      modsecurity_crs_version must not be empty.
+  when: modsecurity_crs_enabled | bool

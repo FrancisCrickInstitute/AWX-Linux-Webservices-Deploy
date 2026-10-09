@@ -1,0 +1,26 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Configures restricted sudo permissions for the DDT deployment group.
+# Allows approved Apache and PHP-FPM service operations without granting unrestricted sudo access.
+
+- name: Configure DDT sudo policy
+  ansible.builtin.blockinfile:
+    path: /etc/sudoers.d/ddt
+    backup: true
+    create: true
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+    block: |
+      Cmnd_Alias WEBSERVICES = /usr/bin/systemctl start httpd, \
+          /usr/bin/systemctl stop httpd, \
+          /usr/bin/systemctl restart httpd, \
+          /usr/bin/systemctl reload httpd, \
+          /usr/bin/systemctl status httpd, \
+          /usr/bin/systemctl start php-fpm, \
+          /usr/bin/systemctl stop php-fpm, \
+          /usr/bin/systemctl restart php-fpm, \
+          /usr/bin/systemctl reload php-fpm, \
+          /usr/bin/systemctl status php-fpm
+      %{{ ddt_deploy_group }} ALL = NOPASSWD: WEBSERVICES

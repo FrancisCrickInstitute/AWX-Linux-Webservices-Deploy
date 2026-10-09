@@ -1,0 +1,13 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Defines metadata and compatibility information for the Apache role.
+# Documents the supported platforms and role-level metadata used by Ansible.
+
+galaxy_info:
+  role_name: apache
+  author: Francis Crick Institute
+  description: Apache web server role for Rocky Linux 10+
+  license: "All Rights Reserved"
+  min_ansible_version: "2.16"
+
+dependencies: []

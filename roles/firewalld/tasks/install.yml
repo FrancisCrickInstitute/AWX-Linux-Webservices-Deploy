@@ -1,0 +1,11 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Installs and enables the Firewalld service required by provisioned webservers.
+# Ensures the firewall service is available before web service rules are applied.
+
+- name: Install firewalld packages
+  ansible.builtin.dnf:
+    name:
+      - firewalld
+      - python3-firewall
+    state: present
