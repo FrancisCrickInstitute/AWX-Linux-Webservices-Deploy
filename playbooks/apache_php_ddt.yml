@@ -4,7 +4,7 @@
 # Includes the standard web stack and DDT-specific account, permissions and configuration.
 
 - name: Deploy Apache PHP and DDT
-  hosts: webservers
+  hosts: "{{ vm_name }}"
   become: true
 
   vars:
