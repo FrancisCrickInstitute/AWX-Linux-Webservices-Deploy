@@ -1,0 +1,27 @@
+---
+# =============================================================================
+# NGINX role - Main tasks
+# =============================================================================
+# Created by Adam Spandel, October 2026
+# Entry point for the NGINX role.
+# Installation, configuration, and validation are split into separate task
+# files to keep the role modular and easy to maintain.
+# =============================================================================
+
+- name: Install NGINX
+  ansible.builtin.include_tasks: install.yml
+  tags:
+    - nginx
+    - nginx_install
+
+- name: Configure NGINX
+  ansible.builtin.include_tasks: configure.yml
+  tags:
+    - nginx
+    - nginx_config
+
+- name: Validate NGINX
+  ansible.builtin.include_tasks: validate.yml
+  tags:
+    - nginx
+    - nginx_validate

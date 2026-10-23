@@ -8,3 +8,5 @@ php_timezone: Europe/London
 php_memory_limit: 512M
 
 php_fpm_service_name: php-fpm
+
+php_fpm_socket: /run/php-fpm/www.sock

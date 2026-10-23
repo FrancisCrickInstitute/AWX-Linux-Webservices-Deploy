@@ -1,0 +1,12 @@
+---
+# =============================================================================
+# NGINX role - Handlers
+# =============================================================================
+# Created by Adam Spandel, October 2026
+# Handlers are triggered only when NGINX configuration changes.
+# =============================================================================
+
+- name: Restart NGINX
+  ansible.builtin.systemd:
+    name: "{{ nginx_service_name }}"
+    state: restarted

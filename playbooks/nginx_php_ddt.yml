@@ -1,0 +1,24 @@
+---
+# Created by Adam Spandel, October 2026
+# Purpose: Provision an NGINX and PHP webserver with DDT deployment access.
+# Includes the standard web stack and DDT-specific account, permissions and configuration.
+
+- name: Deploy NGINX PHP and DDT
+  hosts: "{{ vm_name }}"
+  become: true
+
+  vars:
+    nginx_document_root: "{{ ddt_deploy_document_root }}"
+
+  pre_tasks:
+    - name: Create DDT deployment account
+      ansible.builtin.import_role:
+        name: ddt_deploy
+        tasks_from: account
+
+  roles:
+    - nginx
+    - php
+    - firewalld
+    - composer
+    - ddt_deploy

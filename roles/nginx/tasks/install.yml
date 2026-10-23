@@ -1,0 +1,13 @@
+---
+# =============================================================================
+# NGINX role - Installation
+# =============================================================================
+# Created by Adam Spandel, October 2026
+# Installs the NGINX package using the package name defined in the role
+# defaults. Repository configuration is handled separately by the Pulp role.
+# =============================================================================
+
+- name: Install NGINX package
+  ansible.builtin.dnf:
+    name: "{{ nginx_package_name }}"
+    state: present

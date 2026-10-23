@@ -1,0 +1,15 @@
+---
+# =============================================================================
+# NGINX role metadata
+# =============================================================================
+# Created by Adam Spandel, October 2026
+# =============================================================================
+
+galaxy_info:
+  role_name: nginx
+  author: Francis Crick Institute
+  description: Install and configure NGINX on Rocky Linux 10+
+  license: proprietary
+  min_ansible_version: "2.16"
+
+dependencies: []

@@ -1,0 +1,47 @@
+---
+# =============================================================================
+# NGINX role - Configuration
+# =============================================================================
+# Created by Adam Spandel, October 2026
+# Creates the required NGINX configuration directories and deploys the main
+# NGINX configuration and site configuration from templates.
+# =============================================================================
+
+- name: Create NGINX configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ nginx_sites_available_dir }}"
+    - "{{ nginx_sites_enabled_dir }}"
+
+- name: Deploy main NGINX configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_config_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: /usr/sbin/nginx -t -c %s
+  notify: Restart NGINX
+
+- name: Deploy NGINX site configuration
+  ansible.builtin.template:
+    src: site.conf.j2
+    dest: "{{ nginx_sites_available_dir }}/{{ nginx_server_name }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart NGINX
+
+- name: Enable NGINX site configuration
+  ansible.builtin.file:
+    src: "{{ nginx_sites_available_dir }}/{{ nginx_server_name }}.conf"
+    dest: "{{ nginx_sites_enabled_dir }}/{{ nginx_server_name }}.conf"
+    state: link
+    owner: root
+    group: root
+  notify: Restart NGINX
