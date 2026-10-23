@@ -3,16 +3,27 @@
 # Purpose: Defines the default configuration values used by the DDT deployment role.
 # Controls the DDT account, group, paths and permissions used for web application deployment.
 
+# DDT account
 ddt_deploy_user: ddt-deploy
 ddt_deploy_group: ddt
 
+# DDT paths
 ddt_deploy_home: "/home/{{ ddt_deploy_user }}"
 ddt_deploy_site_root: "{{ ddt_deploy_home }}/site"
 ddt_deploy_document_root: "{{ ddt_deploy_site_root }}"
 
+# DDT account configuration
 ddt_deploy_shell: /bin/bash
 ddt_deploy_site_mode: "0755"
 
+# Webserver type
+# Supported values: apache, nginx
+ddt_deploy_web_server: apache
+
+# Webserver log directories
 ddt_deploy_apache_log_dir: /var/log/httpd
+ddt_deploy_nginx_log_dir: /var/log/nginx
+
+# PHP paths
 ddt_deploy_php_log_dir: /var/log/php-fpm
 ddt_deploy_php_session_dir: /var/lib/php/session

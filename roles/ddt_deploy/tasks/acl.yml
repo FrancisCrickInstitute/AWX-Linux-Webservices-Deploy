@@ -1,7 +1,7 @@
 ---
 # Created by Adam Spandel, October 2026
 # Purpose: Configures filesystem ACL permissions required by the DDT deployment model.
-# Grants controlled access to PHP session data and Apache/PHP-FPM log directories.
+# Grants controlled access to PHP session data, webserver logs and PHP-FPM logs.
 
 - name: Install ACL utilities
   ansible.builtin.dnf:
@@ -24,6 +24,7 @@
     permissions: rX
     recursive: true
     state: present
+  when: ddt_deploy_web_server == "apache"
 
 - name: Set default DDT permissions on Apache logs
   ansible.posix.acl:
@@ -33,6 +34,27 @@
     permissions: rX
     default: true
     state: present
+  when: ddt_deploy_web_server == "apache"
+
+- name: Grant DDT group access to NGINX logs
+  ansible.posix.acl:
+    path: "{{ ddt_deploy_nginx_log_dir }}"
+    entity: "{{ ddt_deploy_group }}"
+    etype: group
+    permissions: rX
+    recursive: true
+    state: present
+  when: ddt_deploy_web_server == "nginx"
+
+- name: Set default DDT permissions on NGINX logs
+  ansible.posix.acl:
+    path: "{{ ddt_deploy_nginx_log_dir }}"
+    entity: "{{ ddt_deploy_group }}"
+    etype: group
+    permissions: rX
+    default: true
+    state: present
+  when: ddt_deploy_web_server == "nginx"
 
 - name: Grant DDT group access to PHP-FPM logs
   ansible.posix.acl:

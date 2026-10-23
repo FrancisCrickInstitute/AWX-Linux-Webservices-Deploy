@@ -9,6 +9,7 @@
 
   vars:
     apache_document_root: "{{ ddt_deploy_document_root }}"
+    ddt_deploy_web_server: apache
 
   pre_tasks:
     - name: Create DDT deployment account
@@ -22,3 +23,4 @@
     - firewalld
     - composer
     - ddt_deploy
+    

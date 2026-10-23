@@ -9,6 +9,7 @@
 
   vars:
     nginx_document_root: "{{ ddt_deploy_document_root }}"
+    ddt_deploy_web_server: nginx
 
   pre_tasks:
     - name: Create DDT deployment account
