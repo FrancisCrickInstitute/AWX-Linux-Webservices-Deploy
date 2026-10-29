@@ -31,7 +31,7 @@ modsecurity_audit_engine: RelevantOnly
 
 modsecurity_audit_log_parts: ABIJDEFHZ
 
-modsecurity_config_file: /etc/httpd/conf.d/modsecurity.conf
+modsecurity_config_file: /etc/httpd/conf.d/mod_security.conf
 
 modsecurity_verify_apache_config: true
 
