@@ -22,5 +22,6 @@
     - php
     - firewalld
     - composer
+    - modsecurity
     - ddt_deploy
     
