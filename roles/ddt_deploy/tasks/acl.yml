@@ -18,22 +18,22 @@
     state: present
   when: ddt_deploy_web_server == "nginx"
 
-- name: Grant NGINX access to DDT site
+- name: Grant NGINX read access to DDT site
   ansible.posix.acl:
     path: "{{ ddt_deploy_site_root }}"
     entity: nginx
     etype: user
-    permissions: rwX
+    permissions: rX
     recursive: true
     state: present
   when: ddt_deploy_web_server == "nginx"
 
-- name: Set default NGINX permissions on DDT site
+- name: Set default NGINX read permissions on DDT site
   ansible.posix.acl:
     path: "{{ ddt_deploy_site_root }}"
     entity: nginx
     etype: user
-    permissions: rwX
+    permissions: rX
     default: true
     state: present
   when: ddt_deploy_web_server == "nginx"
